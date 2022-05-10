@@ -9,7 +9,6 @@ export const getCats = (payload) => {
 }
 
 export const searchCats = (payload) => {
-    console.log(payload)
     return {
         type: SEARCH_CATS,
         payload: payload

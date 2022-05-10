@@ -11,6 +11,7 @@ import { getCats } from '../reducers/Cat/CatsAction';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CatsSearch from './CatsSearch';
+import CatsPagination from './CatsPagination';
 
 function createData(id, name, origin, weight) {
     return { id, name, origin, weight };
@@ -31,7 +32,7 @@ export default function CatsTable() {
         } else {
             let catData = cats
             if (filteredCats)
-                catData = filteredCats
+                catData = filteredCats.data
             let formatedCats = catData.map((data) => {
                 return (createData(data.id, data.name, data.origin, data.weight.metric))
             })
@@ -41,7 +42,7 @@ export default function CatsTable() {
 
     return (
         <Paper>
-            <CatsSearch cats={cats} />
+            <CatsSearch />
             <TableContainer component={Paper} sx={{ maxHeight: 400, minWidth: 1600, minHeight: 400 }}>
                 <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky  table">
                     <TableHead sx={{ backgroundColor: 'black' }}>
@@ -67,14 +68,8 @@ export default function CatsTable() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={rows && rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+            <CatsPagination
+                length={filteredCats ? filteredCats.totalItems : 0}
             />
         </Paper>
     )

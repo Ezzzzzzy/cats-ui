@@ -1,8 +1,12 @@
+import { type } from "@testing-library/user-event/dist/type";
 import * as types from "./CatTypes";
 
 const INITIAL_STATE = {
     cats: null,
+    paginatedCats: null,
     filteredCats: null,
+    page: null,
+    rowsPerPage: null,
     isLoading: false,
     error: {
         flag: false,
@@ -23,10 +27,19 @@ export default (state = INITIAL_STATE, action) => {
                 cats: action.data,
                 isLoading: false,
             }
-        case types.SEARCH_CATS:
+        case types.PAGINATE_CATS:
             return {
                 ...state,
-                filteredCats: action.payload
+                page: action.page,
+                rowsPerPage: action.rowsPerPage
+            }
+        case types.PAGINATE_CATS_SUCCESS:
+            return {
+                ...state,
+                filteredCats: {
+                    data: action.payload.currentPage,
+                    totalItems: action.payload.totalItems
+                }
             }
         case types.GET_CATS_FAILED:
             return {
