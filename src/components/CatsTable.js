@@ -8,26 +8,19 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import { getCats } from '../reducers/Cat/CatsAction';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+function createData(id, name, origin, weight) {
+    return { id, name, origin, weight };
 }
-
 
 export default function CatsTable() {
     const dispatch = useDispatch()
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        createData('Eclair', 262, 16.0, 24, 6.0),
-        createData('Cupcake', 305, 3.7, 67, 4.3),
-        createData('Gingerbread', 356, 16.0, 49, 3.9),
-    ];
-
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const cats = useSelector(state => state.catReducer.cats)
+    const [rows, setRows] = useState(false);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -39,34 +32,39 @@ export default function CatsTable() {
     };
 
     useEffect(() => {
-        dispatch(getCats('test'))
-    }, [])
+        if (!cats) {
+            dispatch(getCats('test'))
+        } else {
+            let formatedCats = cats.map((data) => {
+                return (createData(data.id, data.name, data.origin, data.weight.metric))
+            })
+            setRows(formatedCats)
+        }
+    }, [cats])
 
     return (
         <TableContainer component={Paper} sx={{ margin: 10 }}>
             <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky  table">
-                <TableHead>
+                <TableHead sx={{ backgroundColor: 'black' }}>
                     <TableRow>
-                        <TableCell>Dessert (100g serving)</TableCell>
-                        <TableCell align="right">Calories</TableCell>
-                        <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                        <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                        <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                        <TableCell>Id</TableCell>
+                        <TableCell align="left">Name</TableCell>
+                        <TableCell align="left">Origin</TableCell>
+                        <TableCell align="left">Weight&nbsp;(kg)</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
+                    {rows && rows.map((row) => (
                         <TableRow
                             key={row.name}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell component="th" scope="row">
-                                {row.name}
+                                {row.id}
                             </TableCell>
-                            <TableCell align="right">{row.calories}</TableCell>
-                            <TableCell align="right">{row.fat}</TableCell>
-                            <TableCell align="right">{row.carbs}</TableCell>
-                            <TableCell align="right">{row.protein}</TableCell>
+                            <TableCell align="left">{row.name}</TableCell>
+                            <TableCell align="left">{row.origin}</TableCell>
+                            <TableCell align="left">{row.weight}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -74,7 +72,7 @@ export default function CatsTable() {
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={rows.length}
+                count={rows && rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
