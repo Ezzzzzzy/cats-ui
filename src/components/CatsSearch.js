@@ -18,7 +18,7 @@ export default function CatsSearch(props) {
 
     useEffect(() => {
         if (search != null) {
-            dispatch(searchCats(props.cats, search))
+            dispatch(searchCats(search))
         }
     }, [search])
 
