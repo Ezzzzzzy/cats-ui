@@ -2,6 +2,7 @@ import * as types from "./CatTypes";
 
 const INITIAL_STATE = {
     cats: null,
+    filteredCats: null,
     isLoading: false,
     error: {
         flag: false,
@@ -22,15 +23,21 @@ export default (state = INITIAL_STATE, action) => {
                 cats: action.data,
                 isLoading: false,
             }
+        case types.SEARCH_CATS:
+            return {
+                ...state,
+                filteredCats: action.payload
+            }
         case types.GET_CATS_FAILED:
             return {
                 ...state,
                 error: {
                     flag: true,
-                    msg: 'auth problem'
+                    msg: 'get cats error'
                 },
                 isLoading: false,
             }
+
         default:
             return state;
     }

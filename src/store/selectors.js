@@ -1,0 +1,1 @@
+export const catsData = (state) => state.catReducer.cats

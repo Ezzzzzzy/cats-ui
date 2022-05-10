@@ -10,10 +10,7 @@ import TablePagination from '@mui/material/TablePagination';
 import { getCats } from '../reducers/Cat/CatsAction';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Input } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
+import CatsSearch from './CatsSearch';
 
 function createData(id, name, origin, weight) {
     return { id, name, origin, weight };
@@ -22,48 +19,34 @@ function createData(id, name, origin, weight) {
 export default function CatsTable() {
     const dispatch = useDispatch()
     const cats = useSelector(state => state.catReducer.cats)
+    const filteredCats = useSelector(state => state.catReducer.filteredCats)
     const [rows, setRows] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
     useEffect(() => {
+
         if (!cats) {
             dispatch(getCats('test'))
         } else {
-            let formatedCats = cats.map((data) => {
+            let catData = cats
+            if (filteredCats)
+                catData = filteredCats
+            let formatedCats = catData.map((data) => {
                 return (createData(data.id, data.name, data.origin, data.weight.metric))
             })
             setRows(formatedCats)
         }
-    }, [cats])
+    }, [cats, filteredCats])
 
     return (
         <Paper>
-            <Paper
-                component="form"
-            >
-                <InputBase
-                    placeholder="Search Name"
-                />
-                <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-                    <SearchIcon />
-                </IconButton>
-            </Paper>
-            <TableContainer component={Paper} sx={{ maxHeight: 500, minWidth: 1600 }}>
-
+            <CatsSearch cats={cats} />
+            <TableContainer component={Paper} sx={{ maxHeight: 400, minWidth: 1600, minHeight: 400 }}>
                 <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky  table">
                     <TableHead sx={{ backgroundColor: 'black' }}>
                         <TableRow>
-                            <TableCell>Id</TableCell>
+                            <TableCell align="left">Id</TableCell>
                             <TableCell align="left">Name</TableCell>
                             <TableCell align="left">Origin</TableCell>
                             <TableCell align="left">Weight&nbsp;(kg)</TableCell>
@@ -75,9 +58,7 @@ export default function CatsTable() {
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    {row.id}
-                                </TableCell>
+                                <TableCell align="left">{row.id}</TableCell>
                                 <TableCell align="left">{row.name}</TableCell>
                                 <TableCell align="left">{row.origin}</TableCell>
                                 <TableCell align="left">{row.weight}</TableCell>
