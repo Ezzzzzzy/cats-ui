@@ -5,8 +5,9 @@ const INITIAL_STATE = {
     cats: null,
     paginatedCats: null,
     filteredCats: null,
-    page: null,
-    rowsPerPage: null,
+    page: 0,
+    rowsPerPage: 10,
+    search: null,
     isLoading: false,
     error: {
         flag: false,
@@ -27,13 +28,14 @@ export default (state = INITIAL_STATE, action) => {
                 cats: action.data,
                 isLoading: false,
             }
-        case types.PAGINATE_CATS:
+        case types.FILTER_CATS:
             return {
                 ...state,
+                search: action.search,
                 page: action.page,
                 rowsPerPage: action.rowsPerPage
             }
-        case types.PAGINATE_CATS_SUCCESS:
+        case types.FILTER_CATS_SUCCESS:
             return {
                 ...state,
                 filteredCats: {
@@ -50,6 +52,7 @@ export default (state = INITIAL_STATE, action) => {
                 },
                 isLoading: false,
             }
+
 
         default:
             return state;

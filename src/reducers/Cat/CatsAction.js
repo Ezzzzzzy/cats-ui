@@ -1,5 +1,4 @@
-import { CANCEL_SEARCH, GET_CATS, GET_CATS_FAILED, PAGINATE_CATS, SEARCH_CATS } from "./CatTypes"
-import * as selectors from '../../store/selectors'
+import { GET_CATS, FILTER_CATS } from "./CatTypes"
 
 export const getCats = (payload) => {
     return {
@@ -8,23 +7,13 @@ export const getCats = (payload) => {
     };
 }
 
-export const searchCats = (payload) => {
+export const filterCats = (search, orderBy, direction, page, rowsPerPage) => {
     return {
-        type: SEARCH_CATS,
-        payload: payload
-    }
-
-}
-
-export const catsPagination = (cats, page, rowsPerPage) => {
-    let start = page == 0 ? page : page * rowsPerPage
-    let end = (page + 1) * rowsPerPage
-    let catsData = cats.slice(start, end)
-
-    return {
-        type: PAGINATE_CATS,
-        cats: cats,
-        page: page,
-        rowsPerPage: rowsPerPage
+        type: FILTER_CATS,
+        search: search ? search : '',
+        orderBy,
+        direction,
+        page,
+        rowsPerPage
     }
 }

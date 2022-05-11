@@ -3,13 +3,12 @@ import Paper from '@mui/material/Paper';
 import SearchIcon from '@mui/icons-material/Search';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { searchCats } from '../reducers/Cat/CatsAction';
+import { filterCats, searchCats } from '../reducers/Cat/CatsAction';
 
 export default function CatsSearch(props) {
 
     const dispatch = useDispatch()
     const [search, setSearch] = useState(null);
-
 
     const onChange = useCallback((event) => {
         setSearch(event.target.value)
@@ -18,7 +17,8 @@ export default function CatsSearch(props) {
 
     useEffect(() => {
         if (search != null) {
-            dispatch(searchCats(search))
+            console.log(props)
+            dispatch(filterCats(search, props.orderBy, props.direction, props.page, props.rowsPerPage))
         }
     }, [search])
 
